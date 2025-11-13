@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Dashboard - Learning Management System</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body, html {
+      height: 100%;
+      background: #0b1447 url('https://upload.wikimedia.org/wikipedia/commons/3/37/IPB_campus_building_2012.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #151926;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 20, 71, 0.75);
+      z-index: -1;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Container */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #f8faff;
+      border-radius: 16px;
+      display: flex;
+      min-height: 700px;
+      box-shadow:
+        0 5px 25px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #3c8aba 0%, #33a6c6 100%);
+      color: rgb(4, 32, 58);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset -5px 0 15px rgba(0,0,0,0.25);
+    }
+    .sidebar h2 {
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 30px;
+      user-select: none;
+      text-align: center;
+    }
+
+    .nav-links {
+      list-style: none;
+      width: 100%;
+    }
+    .nav-links li {
+      margin-bottom: 24px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .nav-links li:hover,
+    .nav-links li.active {
+      background-color: #ffffff;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      padding: 32px 48px;
+      overflow-y: auto;
+      color: #151926;
+    }
+
+    /* Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .dashboard-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      user-select: none;
+    }
+    .user-info {
+      font-size: 16px;
+      font-weight: 600;
+      color: #6b7280;
+      user-select: none;
+    }
+
+    /* Cards container */
+    .cards-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgb(0 0 0 / 0.12);
+      padding: 24px 28px;
+      flex: 1 1 210px;
+      min-width: 210px;
+      max-width: 300px;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
+    }
+    .card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #2563eb;
+    }
+    .card p {
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.5;
+    }
+    .card a {
+      color: #5975b2;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 14px;
+      transition: color 0.3s ease;
+    }
+    .card a:hover {
+      color: #1e40af;
+    }
+
+    /* Upcoming Deadlines & Announcements List */
+    .list-section {
+      max-width: 720px;
+      margin-bottom: 40px;
+    }
+    .list-section h2 {
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 18px;
+      user-select: none;
+      color: #0b1221;
+    }
+    .list-item {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: default;
+      transition: background-color 0.2s ease;
+    }
+    .list-item:hover {
+      background-color: #f3f4f6;
+    }
+    .list-item > div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .list-item .title {
+      font-weight: 600;
+      font-size: 16px;
+      color: #111827;
+    }
+    .list-item .desc {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .list-item .date {
+      font-size: 13px;
+      font-weight: 600;
+      color: #275a8a;
+      white-space: nowrap;
+    }
+
+    /* Scrollbar styling for main content */
+    .main-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    .main-content::-webkit-scrollbar-thumb {
+      background-color: #a0aec0cc;
+      border-radius: 20px;
+    }
+    .main-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .dashboard-container {
+        flex-direction: column;
+        height: auto;
+        max-width: 90vw;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 18px 12px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+      
+      .nav-links li {
+        margin-bottom: 0;
+        font-size: 14px;
+        padding: 10px 8px;
+      }
+      
+      .main-content {
+        padding: 24px 20px;
+        max-height: 600px;
+      }
+      .cards-row {
+        justify-content: center;
+      }
+      .list-section {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container" role="main" aria-label="Student Dashboard for Learning Management System">
+    <!-- Sidebar navigation -->
+    <nav class="sidebar" aria-label="Primary navigation">
+      <h2>Student Module</h2>
+      <ul class="nav-links" role="list">
+        <li class="active" tabindex="0" aria-current="page"><a href="dashboard.html">Dashboard</a></li>
+        <li tabindex="0"><a href="courses.html">Courses</a></li>
+        <li tabindex="0"><a href = "assignment.html">Assignments</a></li>
+        <li tabindex="0"><a href="quizz.html">Quizzes</a></li>
+        <li tabindex="0"><a href ="performance.html">Performance Reports</a></li>
+        <li tabindex="0"><a href="notification.html">Notifications</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <section class="main-content" aria-labelledby="dashboard-title">
+      <header class="dashboard-header">
+        <h1 id="dashboard-title">Welcome, Shrijay</h1>
+        <div class="user-info">Student ID: abc123</div>
+      </header>
+
+      <!-- Quick links cards -->
+      <div class="cards-row" aria-label="Quick links to important features">
+        <article class="card" role="article" tabindex="0" aria-describedby="assignment-desc">
+          <h3>Assignments</h3>
+          <p id="assignment-desc">View all your pending and submitted assignments in one place.</p>
+          <a href="assignment.html" aria-label="Go to assignments">Go to Assignments &rarr;</a>
+        </article>
+
+        <article class="card" role="article" tabindex="0" aria-describedby="quiz-desc">
+          <h3>Quizzes</h3>
+          <p id="quiz-desc">Take quizzes and view your scores to track your learning progress.</p>
+          <a href="quizz.html" aria-label="Go to quizzes">Go to Quizzes &rarr;</a>
+        </article>
+
+        <article class="card" role="article" tabindex="0" aria-describedby="performance-desc">
+          <h3>Performance Reports</h3>
+          <p id="performance-desc">Analyze your academic performance across courses.</p>
+          <a href="performance.html" aria-label="View performance reports">View Reports &rarr;</a>
+        </article>
+      </div>
+
+      <!-- Upcoming deadlines -->
+      <section class="list-section" aria-labelledby="upcoming-deadlines-title">
+        <h2 id="upcoming-deadlines-title">Upcoming Deadlines</h2>
+
+        <div class="list-item" tabindex="0" aria-label="Assignment 1 due date September 10, 2023">
+          <div>
+            <span class="title">Assignment 1: Data Structures</span>
+            <span class="desc">Submit your work on linked lists and trees.</span>
+          </div>
+          <time class="date" datetime="2023-09-10">Sep 10, 2023</time>
+        </div>
+
+        <div class="list-item" tabindex="0" aria-label="Quiz 3 due date September 15, 2023">
+          <div>
+            <span class="title">Quiz 3: Algorithms</span>
+            <span class="desc">Covers sorting and searching algorithms.</span>
+          </div>
+          <time class="date" datetime="2023-09-15">Sep 15, 2023</time>
+        </div>
+
+        <div class="list-item" tabindex="0" aria-label="Project Proposal due date September 20, 2023">
+          <div>
+            <span class="title">Project Proposal</span>
+            <span class="desc">Submit proposal for your semester project.</span>
+          </div>
+          <time class="date" datetime="2023-09-20">Sep 20, 2023</time>
+        </div>
+      </section>
+
+      <!-- Important announcements -->
+      <section class="list-section" aria-labelledby="announcements-title">
+        <h2 id="announcements-title">Announcements</h2>
+
+        <div class="list-item" tabindex="0" aria-label="New course material available">
+          <div>
+            <span class="title">New Course Material</span>
+            <span class="desc">Data Structures module updated with new video lectures.</span>
+          </div>
+          <time class="date" datetime="2023-09-05">Sep 5, 2023</time>
+        </div>
+
+        <div class="list-item" tabindex="0" aria-label="System maintenance on Sep 12">
+          <div>
+            <span class="title">System Maintenance</span>
+            <span class="desc">Platform downtime scheduled from 12 am to 4 am on Sep 12.</span>
+          </div>
+          <time class="date" datetime="2023-09-12">Sep 12, 2023</time>
+        </div>
+      </section>
+    </section>
+  </div>
+</body>
+</html>

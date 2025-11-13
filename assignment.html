@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Assignments - Learning Management System</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body, html {
+      height: 100%;
+      background: #0b1447 url('https://upload.wikimedia.org/wikipedia/commons/3/37/IPB_campus_building_2012.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #151926;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 20, 71, 0.75);
+      z-index: -1;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Container */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #f8faff;
+      border-radius: 16px;
+      display: flex;
+      min-height: 700px;
+      box-shadow:
+        0 5px 25px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #3c8aba 0%, #33a6c6 100%);
+      color: rgb(4, 32, 58);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset -5px 0 15px rgba(0,0,0,0.25);
+    }
+    .sidebar h2 {
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 30px;
+      user-select: none;
+      text-align: center;
+    }
+    .nav-links {
+      list-style: none;
+      width: 100%;
+    }
+    .nav-links li {
+      margin-bottom: 24px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      text-align: center;
+    }
+    .nav-links li:hover,
+    .nav-links li.active {
+      background-color: #d2d6e1;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      padding: 32px 48px;
+      overflow-y: auto;
+      color: #151926;
+    }
+
+    /* Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .dashboard-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      user-select: none;
+    }
+    .user-info {
+      font-size: 16px;
+      font-weight: 600;
+      color: #6b7280;
+      user-select: none;
+    }
+
+    /* Assignments list */
+    .assignments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .assignment-item {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgb(0 0 0 / 0.12);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .assignment-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
+    }
+    .assignment-details {
+      flex-grow: 1;
+    }
+    .assignment-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 8px;
+      user-select: text;
+    }
+    .assignment-desc {
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 12px;
+      user-select: text;
+    }
+    .assignment-meta {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .assignment-meta span {
+      margin-right: 16px;
+    }
+    .assignment-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .status {
+      font-weight: 600;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      text-align: center;
+    }
+    .status.submitted {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .status.pending {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .status.overdue {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    .upload-btn {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .upload-btn:hover {
+      background-color: #1d4ed8;
+    }
+    .upload-btn:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .dashboard-container {
+        flex-direction: column;
+        max-width: 95vw;
+        height: auto;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 18px 12px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+      .nav-links li {
+        margin-bottom: 0;
+        font-size: 14px;
+        padding: 10px 8px;
+      }
+      .main-content {
+        padding: 24px 20px;
+        max-height: none;
+      }
+      .assignment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .assignment-actions {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container" role="main" aria-label="Student Assignments and Navigation">
+    <!-- Sidebar navigation -->
+    <nav class="sidebar" aria-label="Primary navigation">
+      <h2>Student Module</h2>
+      <ul class="nav-links" role="list">
+        <li tabindex="0"><a href="dashboard.html">Dashboard</a></li>
+        <li tabindex="0"><a href = "courses.html">Courses</a></li>
+        <li class="active" tabindex="0" aria-current="page">Assignments</li>
+        <li tabindex="0"><a href = "quizz.html">Quizzes</a></li>
+        <li tabindex="0"><a href ="performance.html">Performance Reports</a></li>
+        <li tabindex="0"><a href = "notifications.html">Notifications</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <section class="main-content" aria-labelledby="assignments-title">
+      <header class="dashboard-header">
+        <h1 id="assignments-title">Computer Science Assignments</h1>
+        <div class="user-info">Student ID: abc123</div>
+      </header>
+
+      <div class="assignments-list" role="list" aria-label="List of computer science assignments">
+        <article class="assignment-item" role="listitem" tabindex="0" aria-describedby="desc-ass1 desc-ass1-meta">
+          <div class="assignment-details">
+            <div class="assignment-title">Programming Assignment 1: Python Basics</div>
+            <div id="desc-ass1" class="assignment-desc">
+              Write a Python program to implement a simple calculator that handles basic arithmetic operations.
+            </div>
+            <div id="desc-ass1-meta" class="assignment-meta">
+              <span>Course: CS101</span>
+              <span>Due: Sep 15, 2023</span>
+            </div>
+          </div>
+          <div class="assignment-actions">
+            <div class="status submitted">Submitted</div>
+            <button class="upload-btn" disabled>Upload</button>
+          </div>
+        </article>
+
+        <article class="assignment-item" role="listitem" tabindex="0" aria-describedby="desc-ass2 desc-ass2-meta">
+          <div class="assignment-title">Data Structures Project: Binary Tree Implementation</div>
+          <div id="desc-ass2" class="assignment-desc">
+            Implement a binary search tree with insertion, deletion, and traversal operations in C++.
+          </div>
+          <div id="desc-ass2-meta" class="assignment-meta">
+            <span>Course: CS102</span>
+            <span>Due: Sep 20, 2023</span>
+          </div>
+          <div class="assignment-actions">
+            <div class="status pending">Pending</div>
+            <button class="upload-btn" onclick="alert('Upload functionality would open a file picker here.')">Upload</button>
+          </div>
+        </article>
+
+        <article class="assignment-item" role="listitem" tabindex="0" aria-describedby="desc-ass3 desc-ass3-meta">
+          <div class="assignment-title">Networking Lab: Packet Analysis</div>
+          <div id="desc-ass3" class="assignment-desc">
+            Analyze network packets using Wireshark and submit a report on TCP/IP protocol layers.
+          </div>
+          <div id="desc-ass3-meta" class="assignment-meta">
+            <span>Course: CS103</span>
+            <span>Due: Sep 25, 2023</span>
+          </div>
+          <div class="assignment-actions">
+            <div class="status pending">Pending</div>
+            <button class="upload-btn" onclick="alert('Upload functionality would open a file picker here.')">Upload</button>
+          </div>
+        </article>
+
+        <article class="assignment-item" role="listitem" tabindex="0" aria-describedby="desc-ass4 desc-ass4-meta">
+          <div class="assignment-title">OS Simulation: Process Scheduling</div>
+          <div id="desc-ass4" class="assignment-desc">
+            Simulate CPU scheduling algorithms (FCFS, SJF, Round Robin) and compare their performance.
+          </div>
+          <div id="desc-ass4-meta" class="assignment-meta">
+            <span>Course: CS104</span>
+            <span>Due: Sep 10, 2023</span>
+          </div>
+          <div class="assignment-actions">
+            <div class="status overdue">Overdue</div>
+            <button class="upload-btn" onclick="alert('Upload functionality would open a file picker here.')">Upload</button>
+          </div>
+        </article>
+
+        <article class="assignment-item" role="listitem" tabindex="0" aria-describedby="desc-ass5 desc-ass5-meta">
+          <div class="assignment-title">Database Design: ER Diagram</div>
+          <div id="desc-ass5" class="assignment-desc">
+            Design an Entity-Relationship diagram for a university management system and write SQL queries.
+          </div>
+          <div id="desc-ass5-meta" class="assignment-meta">
+            <span>Course: CS105</span>
+            <span>Due: Sep 30, 2023</span>
+          </div>
+          <div class="assignment-actions">
+            <div class="status pending">Pending</div>
+            <button class="upload-btn" onclick="alert('Upload functionality would open a file picker here.')">Upload</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

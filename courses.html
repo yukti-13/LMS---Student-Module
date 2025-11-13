@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Courses - Learning Management System</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body, html {
+      height: 100%;
+      background: #0b1447 url('https://upload.wikimedia.org/wikipedia/commons/3/37/IPB_campus_building_2012.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #151926;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 20, 71, 0.75);
+      z-index: -1;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Container */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #f8faff;
+      border-radius: 16px;
+      display: flex;
+      min-height: 700px;
+      box-shadow:
+        0 5px 25px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg,  #3c8aba 0%, #33a6c6 100%);
+      color: rgb(4, 32, 58);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset -5px 0 15px rgba(0,0,0,0.25);
+    }
+    .sidebar h2 {
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 30px;
+      user-select: none;
+      text-align: center;
+    }
+    .nav-links {
+      list-style: none;
+      width: 100%;
+    }
+    .nav-links li {
+      margin-bottom: 24px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      text-align: center;
+    }
+    .nav-links li:hover,
+    .nav-links li.active {
+      background-color: #c9daec;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      padding: 32px 48px;
+      overflow-y: auto;
+      color: #151926;
+    }
+
+    /* Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .dashboard-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      user-select: none;
+    }
+    .user-info {
+      font-size: 16px;
+      font-weight: 600;
+      color: #6b7280;
+      user-select: none;
+    }
+
+    /* Courses grid container */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+      gap: 24px;
+    }
+    .course-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgb(0 0 0 / 0.12);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
+    }
+    .course-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2563eb;
+      user-select: text;
+    }
+    .course-code {
+      font-weight: 600;
+      font-size: 15px;
+      color: #6b7280;
+    }
+    .course-description {
+      font-size: 14px;
+      color: #374151;
+      flex-grow: 1;
+      user-select: text;
+    }
+    .course-info {
+      font-size: 13px;
+      color: #536978;
+    }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .dashboard-container {
+        flex-direction: column;
+        max-width: 95vw;
+        height: auto;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 18px 12px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+      .nav-links li {
+        margin-bottom: 0;
+        font-size: 14px;
+        padding: 10px 8px;
+      }
+      .main-content {
+        padding: 24px 20px;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container" role="main" aria-label="Student Courses and Navigation">
+    <!-- Sidebar navigation -->
+    <nav class="sidebar" aria-label="Primary navigation">
+      <h2>Student Module</h2>
+      <ul class="nav-links" role="list">
+        <li tabindex="0"><a href ="dashboard.html">Dashboard</a></li>
+        <li class="active" tabindex="0" aria-current="page">Courses</li>
+        <li tabindex="0"><a href = "assignment.html">Assignments</a></li>
+        <li tabindex="0"><a href ="quizz.html">Quizzes</a></li>
+        <li tabindex="0"><a href="performance.html">Performance Reports</a></li>
+        <li tabindex="0"><a href="notification.html">Notifications</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <section class="main-content" aria-labelledby="courses-title">
+      <header class="dashboard-header">
+        <h1 id="courses-title">Computer Science Courses</h1>
+        <div class="user-info">Student ID: abc123</div>
+      </header>
+
+      <div class="courses-grid" role="list" aria-label="List of computer science courses">
+        <article class="course-card" role="listitem" tabindex="0" aria-describedby="desc-cs101 desc-cs101-info">
+          <div class="course-title">Introduction to Programming</div>
+          <div class="course-code">CS101</div>
+          <div id="desc-cs101" class="course-description">
+            Learn the basics of programming using Python. Covers variables, control structures, functions, and debugging.
+          </div>
+          <div id="desc-cs101-info" class="course-info">Instructor: Dr. Aulia | Credits: 3</div>
+        </article>
+
+        <article class="course-card" role="listitem" tabindex="0" aria-describedby="desc-cs102 desc-cs102-info">
+          <div class="course-title">Data Structures and Algorithms</div>
+          <div class="course-code">CS102</div>
+          <div id="desc-cs102" class="course-description">
+            Study of common data structures like stacks, queues, trees and algorithms including sorting and searching.
+          </div>
+          <div id="desc-cs102-info" class="course-info">Instructor: Prof. Rizky | Credits: 4</div>
+        </article>
+
+        <article class="course-card" role="listitem" tabindex="0" aria-describedby="desc-cs103 desc-cs103-info">
+          <div class="course-title">Computer Networks</div>
+          <div class="course-code">CS103</div>
+          <div id="desc-cs103" class="course-description">
+            Introduction to computer networking concepts, protocols, architectures, and security considerations.
+          </div>
+          <div id="desc-cs103-info" class="course-info">Instructor: Dr. Sari | Credits: 3</div>
+        </article>
+
+        <article class="course-card" role="listitem" tabindex="0" aria-describedby="desc-cs104 desc-cs104-info">
+          <div class="course-title">Operating Systems</div>
+          <div class="course-code">CS104</div>
+          <div id="desc-cs104" class="course-description">
+            Explore operating system principles including process management, memory management, and file systems.
+          </div>
+          <div id="desc-cs104-info" class="course-info">Instructor: Dr. Hendra | Credits: 4</div>
+        </article>
+
+        <article class="course-card" role="listitem" tabindex="0" aria-describedby="desc-cs105 desc-cs105-info">
+          <div class="course-title">Database Systems</div>
+          <div class="course-code">CS105</div>
+          <div id="desc-cs105" class="course-description">
+            Covers database design, SQL queries, normalization, transactions, and database management systems.
+          </div>
+          <div id="desc-cs105-info" class="course-info">Instructor: Prof. Wulan | Credits: 3</div>
+        </article>
+
+        <article class="course-card" role="listitem" tabindex="0" aria-describedby="desc-cs106 desc-cs106-info">
+          <div class="course-title">Artificial Intelligence</div>
+          <div class="course-code">CS106</div>
+          <div id="desc-cs106" class="course-description">
+            Introduction to AI concepts including search algorithms, knowledge representation, and machine learning basics.
+          </div>
+          <div id="desc-cs106-info" class="course-info">Instructor: Dr. Bima | Credits: 3</div>
+        </article>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

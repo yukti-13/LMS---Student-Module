@@ -1,0 +1,262 @@
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Learning Management System - Student Module Login</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      /* background: #c4cad6; */
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Background overlay with blur + dark shade */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url('image1.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      /* filter: blur(1px) brightness(0.2); */
+      z-index: -2;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(70deg, #153c51bb 30%, #0000002c 100%);
+      z-index: -1;
+    }
+
+    /* Main container card */
+    .login-card {
+      width: 720px;
+      max-width: 95vw;
+      height: 360px;
+      background: rgba(255 255 255 / 0.085);
+      border-radius: 14px;
+      display: flex;
+      overflow: hidden;
+      box-shadow:
+        0 8px 24px rgb(0 0 0 / 0.4),
+        inset 0 0 100px 35px rgba(11, 65, 71, 0.6);
+    }
+
+    /* Left panel style */
+    .left-panel {
+      width: 320px;
+      background: linear-gradient(135deg, #2563eb 0%, #0b1447 100%);
+      padding: 30px 28px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+      box-shadow:
+        inset -5px 0 15px rgb(0 0 0 / 0.35);
+      backdrop-filter: saturate(180%) blur(12px);
+      border-top-left-radius: 14px;
+      border-bottom-left-radius: 14px;
+    }
+
+    /* University logo */
+    .logo-container {
+      text-align: center;
+    }
+    .logo-container img {
+      width: 48px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+    }
+    .logo-container h3 {
+      font-weight: 600;
+      letter-spacing: 1.3px;
+      font-size: 20px;
+      line-height: 1.2;
+      user-select: none;
+    }
+
+    /* Login form */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #d1d9ffcc;
+      user-select: none;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      color: #0b1447;
+      outline-offset: 2px;
+      outline-color: transparent;
+      transition: outline-color 0.3s ease;
+    }
+    input::placeholder {
+      color: #9fb7ffcc;
+      font-weight: 500;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline-color: #88aaffaa;
+      background-color: #e3ebff;
+    }
+
+    /* Buttons container */
+    .buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    button {
+      flex: 1;
+      background-color: #3b82f6;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 12px;
+      box-shadow: 0 4px 8px #2256a4bb;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0a2889;
+    }
+    button:active {
+      background-color: #143c8a;
+    }
+
+    /* Forgot password link styled like a button but smaller and white semi-transparent */
+    .forgot-password {
+      user-select: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      color: #a6f3ffd4;
+      text-decoration: underline;
+      padding-left: 16px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: color 0.3s ease;
+      background: none;
+      border: none;
+    }
+    .forgot-password:hover {
+      color: #d3ddff;
+    }
+
+    /* Right panel */
+    .right-panel {
+      flex: 1;
+      position: relative;
+      background: url("image2.png") center/cover no-repeat;
+      border-top-right-radius: 14px;
+      border-bottom-right-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items:baseline;
+    }
+    /* Overlay on right panel for text clarity */
+    .right-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: rgba(255, 255, 255, 0.201);
+      border-top-right-radius: 14px;
+      border-bottom-right-radius: 14px;
+      z-index: 0;
+    }
+    .right-panel-text {
+      position: relative;
+      z-index: 1;
+      font-style: italic ;
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 1.2;
+      color: #0d1752;
+      user-select: none;
+      text-align: center;
+      width: 70%;
+    }
+
+    /* Responsive for smaller devices */
+    @media (max-width: 720px) {
+      .login-card {
+        flex-direction: column;
+        height: auto;
+        max-width: 400px;
+      }
+      .left-panel {
+        width: 100%;
+        border-radius: 14px 14px 0 0;
+        box-shadow: none;
+      }
+      .right-panel {
+        width: 100%;
+        height: 120px;
+        border-radius: 0 0 14px 14px;
+      }
+      .right-panel-text {
+        font-size: 22px;
+        width: 90%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <main class="login-card" role="main" aria-label="Login to Learning Management System Student Module">
+    <section class="left-panel" aria-labelledby="login-header">
+      <div class="logo-container">
+        <img src="image.png" alt="IVP University Logo" />
+        <h3 id="login-header">Log in</h3>
+      </div>
+       
+
+      <form action="dashboard.html" method="get" aria-describedby="login-instruction">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" placeholder="abc123" required />
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required />
+
+        <div class="buttons-row">
+          <button type="submit" aria-label="Login">Login</button>
+          <button type="button" class="forgot-password" tabindex="0" aria-label="Forgot password">Forgot Password?</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="right-panel" aria-hidden="true">
+      <div class="right-panel-text" aria-hidden="true">
+     Student Login 
+      </div>
+    </section>
+  </main>
+</body>
+</html>

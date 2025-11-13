@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quizzes - Learning Management System</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body, html {
+      height: 100%;
+      background: #0b1447 url('https://upload.wikimedia.org/wikipedia/commons/3/37/IPB_campus_building_2012.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #151926;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 20, 71, 0.75);
+      z-index: -1;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Container */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #f8faff;
+      border-radius: 16px;
+      display: flex;
+      min-height: 700px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg,  #3c8aba 0%, #33a6c6 100%);
+      color: rgb(4, 32, 58);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset -5px 0 15px rgba(0,0,0,0.25);
+    }
+    .sidebar h2 {
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 30px;
+      user-select: none;
+      text-align: center;
+    }
+    .nav-links {
+      list-style: none;
+      width: 100%;
+    }
+    .nav-links li {
+      margin-bottom: 24px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      text-align: center;
+    }
+    .nav-links li:hover,
+    .nav-links li.active {
+      background-color: #bac2d8;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      padding: 32px 48px;
+      overflow-y: auto;
+      color: #151926;
+    }
+
+    /* Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .dashboard-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      user-select: none;
+    }
+    .user-info {
+      font-size: 16px;
+      font-weight: 600;
+      color: #6b7280;
+      user-select: none;
+    }
+
+    /* Quizzes grid */
+    .quizzes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .quiz-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgb(0 0 0 / 0.12);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .quiz-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
+    }
+    .quiz-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2563eb;
+      user-select: text;
+    }
+    .quiz-code {
+      font-weight: 600;
+      font-size: 15px;
+      color: #6b7280;
+    }
+    .quiz-description {
+      font-size: 14px;
+      color: #374151;
+      flex-grow: 1;
+      user-select: text;
+    }
+    .quiz-info {
+      font-size: 13px;
+      color: #536978;
+    }
+    .take-quiz-btn {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      align-self: flex-start;
+    }
+    .take-quiz-btn:hover {
+      background-color: #1d4ed8;
+    }
+
+    /* Quiz Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .modal-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #6b7280;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .question p {
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .option {
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .option:hover {
+      background-color: #f3f4f6;
+    }
+    .option.selected {
+      background-color: #dbeafe;
+      border-color: #2563eb;
+    }
+    .submit-btn {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .submit-btn:hover {
+      background-color: #1d4ed8;
+    }
+
+    /* Results */
+    .results {
+      display: none;
+    }
+    .results h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: #2563eb;
+    }
+    .score {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .feedback {
+      margin-bottom: 16px;
+    }
+    .feedback-item {
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .feedback-item.correct {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .feedback-item.incorrect {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .dashboard-container {
+        flex-direction: column;
+        max-width: 95vw;
+        height: auto;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 18px 12px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+      .nav-links li {
+        margin-bottom: 0;
+        font-size: 14px;
+        padding: 10px 8px;
+      }
+      .main-content {
+        padding: 24px 20px;
+        max-height: none;
+      }
+      .modal-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container" role="main" aria-label="Student Quizzes and Navigation">
+    <!-- Sidebar navigation -->
+    <nav class="sidebar" aria-label="Primary navigation">
+      <h2>Student Module</h2>
+      <ul class="nav-links" role="list">
+        <li tabindex="0"><a href="dashboard.html">Dashboard</a></li>
+        <li tabindex="0"><a href="courses.html">Courses</a></li>
+        <li tabindex="0"><a href="assignment.html">Assignments</a></li>
+        <li class="active" tabindex="0" aria-current="page">Quizzes</li>
+        <li tabindex="0"><a href="perfomance.html">Performance Reports</a></li>
+        <li tabindex="0"><a href="notification.html">Notifications</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <section class="main-content" aria-labelledby="quizzes-title">
+      <header class="dashboard-header">
+        <h1 id="quizzes-title">Computer Science Quizzes</h1>
+        <div class="user-info">Student ID: abc123</div>
+      </header>
+
+      <div class="quizzes-grid" role="list" aria-label="List of computer science quizzes">
+        <article class="quiz-card" role="listitem" tabindex="0" data-quiz="cs101">
+          <div class="quiz-title">Programming Basics Quiz</div>
+          <div class="quiz-code">CS101</div>
+          <div class="quiz-description">
+            Test your knowledge of Python basics, including variables, loops, and functions.
+          </div>
+          <div class="quiz-info">Questions: 5 | Time: 10 min</div>
+          <button class="take-quiz-btn" onclick="openQuiz('cs101')">Take Quiz</button>
+        </article>
+
+        <article class="quiz-card" role="listitem" tabindex="0" data-quiz="cs102">
+          <div class="quiz-title">Data Structures Quiz</div>
+          <div class="quiz-code">CS102</div>
+          <div class="quiz-description">
+            Assess understanding of stacks, queues, trees, and sorting algorithms.
+          </div>
+          <div class="quiz-info">Questions: 5 | Time: 15 min</div>
+          <button class="take-quiz-btn" onclick="openQuiz('cs102')">Take Quiz</button>
+        </article>
+
+        <article class="quiz-card" role="listitem" tabindex="0" data-quiz="cs103">
+          <div class="quiz-title">Computer Networks Quiz</div>
+          <div class="quiz-code">CS103</div>
+          <div class="quiz-description">
+            Evaluate knowledge of networking protocols, architectures, and security.
+          </div>
+          <div class="quiz-info">Questions: 5 | Time: 12 min</div>
+          <button class="take-quiz-btn" onclick="openQuiz('cs103')">Take Quiz</button>
+        </article>
+
+        <article class="quiz-card" role="listitem" tabindex="0" data-quiz="cs104">
+          <div class="quiz-title">Operating Systems Quiz</div>
+          <div class="quiz-code">CS104</div>
+          <div class="quiz-description">
+            Quiz on process management, memory, and file systems.
+          </div>
+          <div class="quiz-info">Questions: 5 | Time: 14 min</div>
+          <button class="take-quiz-btn" onclick="openQuiz('cs104')">Take Quiz</button>
+        </article>
+
+        <article class="quiz-card" role="listitem" tabindex="0" data-quiz="cs105">
+          <div class="quiz-title">Database Systems Quiz</div>
+          <div class="quiz-code">CS105</div>
+          <div class="quiz-description">
+            Test skills in SQL, normalization, and database design.
+          </div>
+          <div class="quiz-info">Questions: 5 | Time: 13 min</div>
+          <button class="take-quiz-btn" onclick="openQuiz('cs105')">Take Quiz</button>
+        </article>
+
+        <article class="quiz-card" role="listitem" tabindex="0" data-quiz="cs106">
+          <div class="quiz-title">Artificial Intelligence Quiz</div>
+          <div class="quiz-code">CS106</div>
+          <div class="quiz-description">
+            Questions on AI concepts, search algorithms, and machine learning.
+          </div>
+          <div class="quiz-info">Questions: 5 | Time: 16 min</div>
+          <button class="take-quiz-btn" onclick="openQuiz('cs106')">Take Quiz</button>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- Quiz Modal -->
+  <div id="quiz-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Quiz</h2>
+        <button class="close-btn" onclick="closeModal()" aria-label="Close quiz">&times;</button>
+      </div>
+      <div id="quiz-content">
+        <!-- Questions will be loaded here -->
+      </div>
+      <button id="submit-btn" class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+      <div id="results" class="results">
+        <h3>Results</h3>
+        <div id="score"></div>
+        <div id="feedback"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    let currentQuiz = null;
+    let userAnswers = [];
+
+    function openQuiz(quizId) {
+      currentQuiz = quizId;
+      userAnswers = [];
+      const modal = document.getElementById('quiz-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const quizContent = document.getElementById('quiz-content');
+      const results = document.getElementById('results');
+      const submitBtn = document.getElementById('submit-btn');
+
+      modalTitle.textContent = `${quizId.toUpperCase()} Quiz`;
+      quizContent.innerHTML = '';
+      results.style.display = 'none';
+      submitBtn.style.display = 'block';
+
+      quizzes[quizId].forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.innerHTML = `
+          <p>${index + 1}. ${q.question}</p>
+          <div class="options">
+            ${q.options.map((option, i) => `
+              <div class="option" data-index="${i}" onclick="selectOption(${index}, ${i})">${option}</div>
+            `).join('')}
+          </div>
+        `;
+        quizContent.appendChild(questionDiv);
+      });
+
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function selectOption(questionIndex, optionIndex) {
+      userAnswers[questionIndex] = optionIndex;
+      const options = document.querySelectorAll(`.question:nth-child(${questionIndex + 1}) .option`);
+      options.forEach((opt, i) => {
+        opt.classList.toggle('selected', i === optionIndex);
+      });
+    }
+
+    function submitQuiz() {
+      if (userAnswers.length !== quizzes[currentQuiz].length) {
+        alert('Please answer all questions.');
+        return;
+      }
+
+      const quizContent = document.getElementById('quiz-content');
+      const results = document.getElementById('results');
+      const scoreDiv = document.getElementById('score');
+      const feedbackDiv = document.getElementById('feedback');
+      const submitBtn = document.getElementById('submit-btn');
+
+      let score = 0;
+      feedbackDiv.innerHTML = '';
+
+      quizzes[currentQuiz].forEach((q, index) => {
+        const isCorrect = userAnswers[index] === q.correct;
+        if (isCorrect) score++;
+        const feedbackItem = document.createElement('div');
+        feedbackItem.className = `feedback-item ${isCorrect ? 'correct' : 'incorrect'}`;
+        feedbackItem.innerHTML = `
+          <strong>Question ${index + 1}:</strong> ${q.question}<br>
+          Your answer: ${q.options[userAnswers[index]]}<br>
+          Correct answer: ${q.options[q.correct]}<br>
+          ${q.feedback}
+        `;
+        feedbackDiv.appendChild(feedbackItem);
+      });
+
+      scoreDiv.textContent = `Your Score: ${score}/${quizzes[currentQuiz].length} (${Math.round((score / quizzes[currentQuiz].length) * 100)}%)`;
+      quizContent.style.display = 'none';
+      results.style.display = 'block';
+      submitBtn.style.display = 'none';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('quiz-modal');
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Quiz data
+    const quizzes = {
+      cs101: [
+        { question: "What is the output of print(2 + 3)?", options: ["5", "23", "Error", "None"], correct: 0, feedback: "Correct! Basic arithmetic in Python." },
+        { question: "Which keyword is used to define a function in Python?", options: ["def", "func", "define", "function"], correct: 0, feedback: "Correct! 'def' defines a function." },
+        { question: "What does 'len()' do?", options: ["Length of string", "Length of list", "Both", "None"], correct: 2, feedback: "Correct! len() works for strings and lists." },
+        { question: "How do you start a loop in Python?", options: ["for", "while", "both", "none"], correct: 2, feedback: "Correct! Both 'for' and 'while' start loops." },
+        { question: "What is a variable?", options: ["Constant", "Storage", "Function", "Loop"], correct: 1, feedback: "Correct! Variables store data." }
+      ],
+      cs102: [
+        { question: "What is a stack?", options: ["LIFO", "FIFO", "Random", "None"], correct: 0, feedback: "Correct! Stack is Last In, First Out." },
+        { question: "Which is not a tree traversal?", options: ["Inorder", "Preorder", "Postorder", "Random"], correct: 3, feedback: "Correct! Random is not a standard traversal." },
+        { question: "Best sorting for small arrays?", options: ["Bubble", "Quick", "Merge", "Heap"], correct: 0, feedback: "Correct! Bubble sort is simple for small data." },
+        { question: "What is a queue?", options: ["LIFO", "FIFO", "Random", "None"], correct: 1, feedback: "Correct! Queue is First In, First Out." },
+        { question: "Time complexity of binary search?", options: ["O(n)", "O(log n)", "O(n^2)", "O(1)"], correct: 1, feedback: "Correct! Binary search is O(log n)." }
+      ],
+      cs103: [
+        { question: "What does TCP stand for?", options: ["Transfer Control Protocol", "Transmission Control Protocol", "Transport Control Protocol", "None"], correct: 1, feedback: "Correct! Transmission Control Protocol." },
+        { question: "Which layer is responsible for IP addresses?", options: ["Physical", "Data Link", "Network", "Transport"], correct: 2, feedback: "Correct! Network layer handles IP." },
+        { question: "What is a firewall?", options: ["Hardware", "Software", "Both", "None"], correct: 2, feedback: "Correct! Firewalls can be hardware or software." },
+        { question: "What does HTTP stand for?", options: ["HyperText Transfer Protocol", "High Transfer Protocol", "Hyper Transfer Text", "None"], correct: 0, feedback: "Correct! HyperText Transfer Protocol." },
+        { question: "Which is not a network topology?", options: ["Star", "Ring", "Bus", "Cube"], correct: 3, feedback: "Correct! Cube is not a standard topology." }
+      ],
+      cs104: [
+        { question: "What manages processes?", options: ["CPU", "Memory", "OS", "Disk"], correct: 2, feedback: "Correct! Operating System manages processes." },
+        { question: "What is virtual memory?", options: ["RAM", "Disk as RAM", "Cache", "None"], correct: 1, feedback: "Correct! Virtual memory uses disk as extended RAM." },
+        { question: "Which scheduling is preemptive?", options: ["FCFS", "SJF", "Round Robin", "Priority"], correct: 2, feedback: "Correct! Round Robin is preemptive." },
+        { question: "What is a deadlock?", options: ["Infinite loop", "Resource wait", "Error", "None"], correct: 1, feedback: "Correct! Deadlock is a resource waiting state." },
+        { question: "What does the file system manage?", options: ["Processes", "Memory", "Files", "CPU"], correct: 2, feedback: "Correct! File system manages files and directories." }
+      ],
+      cs105: [
+        { question: "What does SQL stand for?", options: ["Structured Query Language", "Simple Query Language", "Standard Query Language", "None"], correct: 0, feedback: "Correct! Structured Query Language." },
+        { question: "What is normalization?", options: ["Adding data", "Reducing redundancy", "Sorting data", "None"], correct: 1, feedback: "Correct! Normalization reduces data redundancy." },
+        { question: "Which is a DDL command?", options: ["SELECT", "INSERT", "CREATE", "UPDATE"], correct: 2, feedback: "Correct! CREATE is a Data Definition Language command." },
+        { question: "What is a primary key?", options: ["Unique identifier", "Foreign key", "Index", "None"], correct: 0, feedback: "Correct! Primary key uniquely identifies a record." },
+        { question: "What does JOIN do in SQL?", options: ["Combine tables", "Sort data", "Delete data", "None"], correct: 0, feedback: "Correct! JOIN combines data from multiple tables." }
+      ],
+      cs106: [
+        { question: "What is AI?", options: ["Artificial Intelligence", "Automated Interface", "Advanced Integration", "None"], correct: 0, feedback: "Correct! Artificial Intelligence." },
+        { question: "Which is a search algorithm?", options: ["Breadth-First", "Sorting", "Hashing", "None"], correct: 0, feedback: "Correct! Breadth-First Search is a search algorithm." },
+        { question: "What is machine learning?", options: ["Learning machines", "Data learning", "Pattern recognition", "None"], correct: 2, feedback: "Correct! Machine learning involves pattern recognition." },
+        { question: "What is a neural network?", options: ["Brain model", "Database", "Algorithm", "None"], correct: 0, feedback: "Correct! Neural networks model the brain." },
+        { question: "What does NLP stand for?", options: ["Natural Language Processing", "Neural Learning Process", "Network Language Protocol", "None"], correct: 0, feedback: "Correct! Natural Language Processing." }
+      ]
+    };
+  </script>
